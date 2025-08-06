@@ -1,4 +1,4 @@
-Originally submitted as a Major Project for a Prog2 class back in 2020.
+Originally submitted as a Major Project for a Prog2 class back in 2021.
 Programmed using C with a Windows device. 
 
 # Game Instructions:
