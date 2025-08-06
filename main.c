@@ -82,7 +82,7 @@ int nLevel: The current level the game is on
 Return Value: The items would be scattered on the map*/
 void items (map game,int nLevel)
 {
-char items[4]={'\\','/', '@','u'};
+char items[4]={'\\','/', '@','*'};
 srand(time(0));
 int i;
 int j;
@@ -103,7 +103,7 @@ for( z = 0; z < 4; z++)
 					bValid = 0;
 				else if(items[z]=='@'&& i<=3 && j<=13 && nLevel==2)
 					bValid = 0;
-				else if(items[z]=='u'&& i>=16 && j>=23 && nLevel==2)
+				else if(items[z]=='*'&& i>=16 && j>=23 && nLevel==2)
 					bValid =0; 
 				else if(items[z]=='/'&& i>=12 && j>=28 && nLevel==2)
 					bValid = 0; 
@@ -113,9 +113,9 @@ for( z = 0; z < 4; z++)
 					bValid = 0 ;
 				else if(items[z]=='/'&& i<=4 && j>=32 && nLevel==3)
 					bValid = 0;
-				else if (items[z]=='u' && i>=11 && i<=13 && j>=16 && j<=33 && nLevel==3)
+				else if (items[z]=='*' && i>=11 && i<=13 && j>=16 && j<=33 && nLevel==3)
 					bValid = 0;
-				else if (items[z]=='u' && i>=16 && j<=23 && nLevel==3)
+				else if (items[z]=='*' && i>=16 && j<=23 && nLevel==3)
 					bValid = 0;
 				else if (items[z]=='\\' && i>=15 && j<=6 && nLevel==3)
 					bValid = 0;
@@ -142,7 +142,7 @@ void displayItems(Items Player,int reqChip)
 	printf(" Y-Key: %d \n",Player.Keys.yellow);
 	printf(" C-Key: %d \n",Player.Keys.cyan);	
 	printf(" Fire Protection: %d \n", Player.Pro.fire);
-	printf(" Water Ptotection: %d \n",Player.Pro.water);
+	printf(" Water Protection: %d \n",Player.Pro.water);
 }
 
 /*Description: Initializes/resets the number of items the player currently has
@@ -184,7 +184,7 @@ int characterItem(char pos, Items *player)
 		(*player).Keys.yellow +=1;
 	else if(pos =='\\')
 		(*player).Keys.cyan +=1;
-	else if (pos=='u')
+	else if (pos=='*')
 		(*player).Pro.water+=1;
 	else if(pos=='@')
 		(*player).Pro.fire+=1;
@@ -265,7 +265,7 @@ int isValidPass(string pw)
 {
 	int i;
 	int nAttempt=0;
-	char pass[strlen(pw)];
+	char pass[strlen(pw)+1];
 	while (strcmp(pass,pw)!=0 && nAttempt!=3)
 	{
 
@@ -273,8 +273,9 @@ int isValidPass(string pw)
 		for(i=0;i<strlen(pw);i++)
 		{
 			pass[i]=getch();
-			printf("*"); //printf("%c", pass[i]) // for test purposes
+			printf("*"); 
 		}
+		pass[strlen(pw)] ='\0';
 		if(strcmp(pass,pw)!=0)
 			nAttempt++;	
 	}
@@ -315,10 +316,11 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			displayLevelUpMenu();
 		
 			while(choice!='3'&& choice!='1'&& choice!='2')
-			{	scanf(" %c",&choice);
+			{	
+				scanf(" %c",&choice);
 				if(choice!='3'&& choice!='1'&& choice!='2'){
 				
-					printf("Invalid!");
+					printf("Invalid Choice!");
 					}
 			}	
 	
@@ -331,9 +333,9 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 					next=-1;
 				else if	(isValidPass(pw[*nLevel-1])==1)
 				{
-					*nLevel+=1;
+					*nLevel += 1;
 					initLevels(game,*nLevel);
-					*reqChip=countItems(game, 'H');
+					*reqChip = countItems(game, 'H');
 					initializeDefault(player);
 					displayBoard(game,*nLevel);
 					next=1;
@@ -654,7 +656,7 @@ int main()
 			items(game,nLevel);
 			system("cls"); 
 			if (gamePlay(game, &nLevel, &player,ReqChip)==1)
-				printf(" |%s|","You died! Try Again?");
+				printf("| %s |","You died! Try Again?");
 			displayMenu();
 		}
 	 		
