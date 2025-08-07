@@ -20,11 +20,11 @@ void initLevels(map Map,int nLevel)
 	int j;
 	FILE * file;
 	if (nLevel == 1)
-		file = fopen("level1.txt","r");
+		file = fopen("maps/level1.txt","r");
 	else if(nLevel == 2)
-		file = fopen("level2.txt","r");
+		file = fopen("maps/level2.txt","r");
 	else if(nLevel == 3)
-		file = fopen("level3.txt","r");
+		file = fopen("maps/level3.txt","r");
 	if (file != NULL)
 	{	
 		i = 0;
