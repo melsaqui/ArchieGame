@@ -137,12 +137,15 @@ Return Value: The Inventory will be diplayed
 */
 void displayItems(Items Player,int reqChip)
 {
-	printf(" Inventory \n");
-	printf(" Chips: %d/%d\n",Player.chips,reqChip);
-	printf(" Y-Key: %d \n",Player.Keys.yellow);
-	printf(" C-Key: %d \n",Player.Keys.cyan);	
-	printf(" Fire Protection: %d \n", Player.Pro.fire);
-	printf(" Water Protection: %d \n",Player.Pro.water);
+	printf("  ---------------------\n");
+	printf(" | Inventory %11s\n","|");
+	printf(" | Chips: %d/%d %10s\n",Player.chips,reqChip,"|");
+	printf(" | Y-Key: %d %12s\n",Player.Keys.yellow,"|");
+	printf(" | C-Key: %d %12s\n",Player.Keys.cyan,"|");	
+	printf(" | Fire Protection: %d %2s\n", Player.Pro.fire,"|");
+	printf(" | Water Protection: %d |\n",Player.Pro.water);
+	printf("  --------------------- ");
+
 }
 
 /*Description: Initializes/resets the number of items the player currently has
@@ -200,9 +203,12 @@ int characterItem(char pos, Items *player)
 /*Description: Displays the main menu*/
 void displayLevelUpMenu()
 {	
-	printf("\n| 1-Continue       |\n");
-	printf("| 2-Restart Level  |\n");
-	printf("| 3-Quit      	   |\n");
+	printf("  ------------------- \n");
+	printf(" |    1-Continue     |\n");
+	printf(" |  2-Restart Level  |\n");
+	printf(" |      3-Quit       |\n");
+	printf("  ------------------- \n");
+
 }
 
 /*Descrription: Checks is if the value is a slide tile
@@ -234,7 +240,7 @@ Return Value: The game map is displayed*/
 void displayBoard (map game,int Level)
 {
 	int i, j;
-	printf("\n%40s %d |\n\n","| LEVEL", Level);
+	printf("%40s %d |\n\n","| LEVEL", Level);
 	for(i = 0; i < Row; i++) 
   	{
 		for(j = 0; j < Col; j++)
