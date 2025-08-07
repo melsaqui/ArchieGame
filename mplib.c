@@ -41,19 +41,19 @@ void Colors(char pos)
 	else if(pos=='Y')
 		printf("\x1b[43;1m"); //yellow background
 	else if(pos=='C')
-		printf("\x1b[46;1m"); //yellow background
+		printf("\x1b[106;1m"); //Cyan background
 	else if(pos=='0')
-		printf("\x1b[47m\x1b[31m"); //white background
+		printf("\x1b[47m\x1b[31m"); //white background; red foreground
 	else if(pos=='X')
-		printf("\x1b[45m"); //purple background
+		printf("\x1b[45;1m"); //purple background
 	else if(pos=='>'||pos=='^'||pos=='v'||pos=='<')
 		printf("\x1b[42;1m");// green background
 	else if(pos =='H')
-		printf("\x1b[35m");
+		printf("\x1b[35m"); //magenta text
 	else if(pos =='A')
-		printf("\x1b[32m");
+		printf("\x1b[35;106;1;5m");  // ; ;bold ;blink
 	else 
-		printf("\x1b[0m");
+		printf("\x1b[40m");
 	
 }
 

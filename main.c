@@ -82,52 +82,52 @@ int nLevel: The current level the game is on
 Return Value: The items would be scattered on the map*/
 void items (map game,int nLevel)
 {
-char items[4]={'\\','/', '@','*'};
-srand(time(0));
-int i;
-int j;
-int z;
-int bValid;
-for( z = 0; z < 4; z++)
-{
-	if(countItems(game,items[z]) == 0)
+	char items[4]={'\\','/', '@','*'};
+	srand(time(0));
+	int i;
+	int j;
+	int z;
+	int bValid;
+	for( z = 0; z < 4; z++)
 	{
-		bValid = 0;
-		while (bValid!=1)
+		if(countItems(game,items[z]) == 0)
 		{
-			i = (Randomizer(2,Row-1));
-			j = (Randomizer(2,Col-1));
-			if (game[i][j]=='_')
+			bValid = 0;
+			while (bValid!=1)
 			{
-				if(items[z]=='/' && i>15&&j<=5 && nLevel==1)
-					bValid = 0;
-				else if(items[z]=='@'&& i<=3 && j<=13 && nLevel==2)
-					bValid = 0;
-				else if(items[z]=='*'&& i>=16 && j>=23 && nLevel==2)
-					bValid =0; 
-				else if(items[z]=='/'&& i>=12 && j>=28 && nLevel==2)
-					bValid = 0; 
-				else if(items[z]=='\\'&& i>=6 && i<=9 &&j>=14&&j<=20 && nLevel==2)
-					bValid = 0;
-				else if(items[z]=='@' && i<=4 && nLevel==3 )
-					bValid = 0 ;
-				else if(items[z]=='/'&& i<=4 && j>=32 && nLevel==3)
-					bValid = 0;
-				else if (items[z]=='*' && i>=11 && i<=13 && j>=16 && j<=33 && nLevel==3)
-					bValid = 0;
-				else if (items[z]=='*' && i>=16 && j<=23 && nLevel==3)
-					bValid = 0;
-				else if (items[z]=='\\' && i>=15 && j<=6 && nLevel==3)
-					bValid = 0;
-				else
+				i = (Randomizer(2,Row-1));
+				j = (Randomizer(2,Col-1));
+				if (game[i][j]=='_')
 				{
-					bValid = 1;
-					game[i][j] = items[z];
-				}
+					if(items[z]=='/' && i>15&&j<=5 && nLevel==1)
+						bValid = 0;
+					else if(items[z]=='@'&& i<=3 && j<=13 && nLevel==2)
+						bValid = 0;
+					else if(items[z]=='*'&& i>=16 && j>=23 && nLevel==2)
+						bValid =0; 
+					else if(items[z]=='/'&& i>=12 && j>=28 && nLevel==2)
+						bValid = 0; 
+					else if(items[z]=='\\'&& i>=6 && i<=9 &&j>=14&&j<=20 && nLevel==2)
+						bValid = 0;
+					else if(items[z]=='@' && i<=4 && nLevel==3 )
+						bValid = 0 ;
+					else if(items[z]=='/'&& i<=4 && j>=32 && nLevel==3)
+						bValid = 0;
+					else if (items[z]=='*' && i>=11 && i<=13 && j>=16 && j<=33 && nLevel==3)
+						bValid = 0;
+					else if (items[z]=='*' && i>=16 && j<=23 && nLevel==3)
+						bValid = 0;
+					else if (items[z]=='\\' && i>=15 && j<=6 && nLevel==3)
+						bValid = 0;
+					else
+					{
+						bValid = 1;
+						game[i][j] = items[z];
+					}
+				}	
 			}
 		}
 	}
-}
 }
 /*Description: Displays the Players items
 Parameters: 
@@ -152,10 +152,10 @@ Return Value: all items sghould be set to 0;*/
 void initializeDefault(Items *Player)
 {
 	Player->chips = 0;
-	 (*Player).Keys.yellow = 0;
-	 (*Player).Keys.cyan = 0;	
-	 (*Player).Pro.fire = 0;
-	 (*Player).Pro.water = 0;
+	(*Player).Keys.yellow = 0;
+	(*Player).Keys.cyan = 0;	
+	(*Player).Pro.fire = 0;
+	(*Player).Pro.water = 0;
 }
 /*Description: checks if the player has died due to stepping on elemental tiles unprotected 
 or they died attempting to exit without enough chips
@@ -299,7 +299,7 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 	string pw[2]={"4rchi3", "f137pr0g2"};
 	char choice;
 	int next;
-	if (pos =='X' &&(isDead(pos,*player,*reqChip) == 0))
+	if (pos =='X' && (isDead(pos,*player,*reqChip) == 0))
 	{
 		if(*nLevel==3)
 		{
@@ -311,6 +311,7 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 		{
 			printf("Congrats! You finished level %d!\n", *nLevel);
 			printf("Remember The password for level %d is: %s  or else you die!! \n", *nLevel+1, pw[*nLevel-1]);
+			printf("Press any key to continue!");
 			getch();
 			system("cls");
 			displayLevelUpMenu();
@@ -319,9 +320,8 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			{	
 				scanf(" %c",&choice);
 				if(choice!='3'&& choice!='1'&& choice!='2'){
-				
 					printf("Invalid Choice!");
-					}
+				}
 			}	
 	
 			if (choice =='3')
@@ -341,16 +341,19 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 					next=1;
 				}
 			}
-			else if(choice =='2')//restart level
+			else if(choice =='2') //restart level
 			{
+				//system("cls");
+				//printf("press any key to proceed");
 				initLevels(game,*nLevel);
-				items(game,*nLevel);
+			    items(game,*nLevel);
 				next = 2; 
 			}
 		}
 	}else
 		next= 0;
-return next;
+
+	return next;
 }
 /*Description: Does what happens when a player stepped on a slide tile
 int *x: The player's current x position 
@@ -463,43 +466,44 @@ int characterMove(map game, int *nLevel, int *x, int *y, Items* player,int *reqC
 	{
 		if(isLevelUp(game[*y][*x],nLevel,  player, reqChip, game) == 2) //restart level 
 		{
+
 			initializeDefault(player);
 			findPlayer(game,x,y);
 		}
 			
-	if(isDead(game[*y][*x], *player,*reqChip) == 1)//died by elemental
-		return 1;
-	if(characterItem(game[*y][*x], player)==1)
-	{
-		if (*nLevel == 1)
+		if(isDead(game[*y][*x], *player,*reqChip) == 1)//died by elemental
+			return 1;
+		if(characterItem(game[*y][*x], player)==1)
 		{
-			game[17][2] ='H';
-			game[13][34] ='H';
+			if (*nLevel == 1)
+			{
+				game[17][2] ='H';
+				game[13][34] ='H';
+			}	
+			else if(*nLevel == 2)
+			{
+				game[18][2]='H';
+				game[1][1]='H';
+				game[12][33]='H';
+			}
+			else if(*nLevel == 3)
+			{
+				game[2][36] ='H';
+				game[17][4]='H';
+				game[1][1]='H';
+				game[18][36]='H';
+				game[12][31]='H';
+			}
+			items(game,*nLevel);
 		}	
-		else if(*nLevel == 2)
-		{
-			game[18][2]='H';
-			game[1][1]='H';
-			game[12][33]='H';
-		}
-		else if(*nLevel == 3)
-		{
-			game[2][36] ='H';
-			game[17][4]='H';
-			game[1][1]='H';
-			game[18][36]='H';
-			game[12][31]='H';
-		}
-		items(game,*nLevel);
-	}	
 	
-	system("cls");
-	game[*y][*x]= 'A';
-	displayBoard(game,*nLevel);
-	displayItems(*player,*reqChip);
-	nEnd = 0;
-}
-return nEnd;
+		system("cls");
+		game[*y][*x]= 'A';
+		displayBoard(game,*nLevel);
+		displayItems(*player,*reqChip);
+		nEnd = 0;
+	}
+	return nEnd;
 }
 /*Description: Check if the tile is locked
 char pos: the tile being checked
@@ -525,112 +529,142 @@ return value: updated values of the x and y of the player, returns 1 if player d
 or 0 if the game is not yet ending*/
 int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 {
-int x;
-int y;
-findPlayer(game, &x,&y);
-char control;
-char temp ='_';
-int bEnd = 0;
-displayBoard(game,*nLevel);
-displayItems(*player,reqChip);
-while (bEnd == 0)
-{ 	if(control!='d'&&control!='D'&&control!='a'&&control!='A'
-	&&control!='s'&&control!='S'&&control!='w'&&control!='W')
-		control=getch();
-	while ((control == 'd'||control== 'D' ) && bEnd==0)
-	{
-		if((game[y][x+1]!='#'&& x+1<=Col-1)&& isLocked(game[y][x+1],*player)==0)
-		{
-			x++;
-			game[y][x-1] = temp;
-			if (isTile(game[y][x]) == 1)
-				temp = game[y][x];
-			else if(isTile(game[y][x]==1))
-				temp = game[y][x+1];
-			else temp = '_';	
-		}	
-		if(characterMove(game, nLevel,&x,&y, player,&reqChip)==1)
-			bEnd=1;
-		else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
-			bEnd =2;
-		else 
-			control = getch();
-	}
-	while ((control== 'a'||control == 'A') && bEnd==0)
-	{
-		if((game[y][x-1]!='#'&& x-1>=0)&& isLocked(game[y][x-1],*player)==0)
-		{
-			x--;
-			game[y][x+1] = temp;
-			if (isTile(game[y][x]) == 1)
-				temp = game[y][x]; 
-			else temp = '_';
-		}
-		if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
-			bEnd=1;
-		else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
-		{
-			bEnd=2;
-		}
-		else
+	int x;
+	int y;
+	findPlayer(game, &x,&y);
+	char control;
+	char temp ='_';
+	int bEnd = 0;
+	displayBoard(game,*nLevel);
+	displayItems(*player,reqChip);
+	while (bEnd == 0)
+	{ 	
+		if(control!='d'&&control!='D'&&control!='a'&&control!='A'&& control!='s'&&control!='S'&&control!='w'&&control!='W')
 			control=getch();
-	}
-	while ((control== 's'||control== 'S') && bEnd==0)
-	{
- 		if ((game[y+1][x]!= '#' && y+1 <= Row-1) && isLocked(game[y+1][x],*player)==0)
-		{		
-			y++;
-			game[y-1][x] = temp;
-			if (isTile(game[y][x]) == 1)
-				temp = game[y][x];
-			else temp = '_';
-		}	
-		if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
-			bEnd=1;
-		else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+		while ((control == 'd'||control== 'D' ) && bEnd==0)
 		{
-			bEnd=2;
+			if((game[y][x+1]!='#'&& x+1<=Col-1)&& isLocked(game[y][x+1],*player)==0)
+			{
+				x++;
+				game[y][x-1] = temp;
+				if (isTile(game[y][x]) == 1)
+					temp = game[y][x];
+				else if(isTile(game[y][x]==1))
+					temp = game[y][x+1];
+				else temp = '_';	
+			}	
+			if(characterMove(game, nLevel,&x,&y, player,&reqChip)==1)
+				bEnd=1;
+			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+				bEnd =2;
+			else 
+				control = getch();
 		}
-		else
-			control = getch();
-	}
-	while ((control=='w'||control=='W')&&bEnd==0)
-	{
- 		if ((game[y-1][x]!= '#' && y-1>=0)&&isLocked(game[y-1][x],*player)==0)
- 		{
- 			y--;
- 			game[y+1][x]= temp;
- 			if (isTile(game[y][x])== 1)
-				 temp = game[y][x];
-			else temp = '_';
- 		}
-		if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
-			bEnd=1;
-		else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+		while ((control== 'a'||control == 'A') && bEnd==0)
 		{
-			bEnd = 2;
+			if((game[y][x-1]!='#'&& x-1>=0)&& isLocked(game[y][x-1],*player)==0)
+			{
+				x--;
+				game[y][x+1] = temp;
+				if (isTile(game[y][x]) == 1)
+					temp = game[y][x]; 
+				else temp = '_';
+			}
+			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+				bEnd=1;
+			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			{
+				bEnd=2;
+			}
+			else
+				control=getch();
 		}
-		else	
-			control = getch();
+		while ((control== 's'||control== 'S') && bEnd==0)
+		{
+ 			if ((game[y+1][x]!= '#' && y+1 <= Row-1) && isLocked(game[y+1][x],*player)==0)
+			{		
+				y++;
+				game[y-1][x] = temp;
+				if (isTile(game[y][x]) == 1)
+					temp = game[y][x];
+				else 
+					temp = '_';
+			}	
+			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+				bEnd=1;
+			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			{
+				bEnd=2;
+			}
+			else
+				control = getch();
+		}
+		while ((control=='w'||control=='W')&&bEnd==0)
+		{
+ 			if ((game[y-1][x]!= '#' && y-1>=0)&&isLocked(game[y-1][x],*player)==0)
+ 			{
+ 				y--;
+ 				game[y+1][x]= temp;
+ 				if (isTile(game[y][x])== 1)
+					temp = game[y][x];
+				else 
+					temp = '_';
+ 			}
+			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+				bEnd=1;
+			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			{
+				bEnd = 2;
+			}
+			else	
+				control = getch();
+		}
 	}
-}
 
-if (bEnd==1)
-{
-	system("cls"); 
-	*nLevel=1;
-	return 1;
-}
-else if(bEnd==2)
-	return 2;
-else return 0;
-}
+	if (bEnd==1)
+	{
+		system("cls"); 
+		*nLevel=1;
+		return 1;
+	}
+	else if(bEnd==2)
+		return 2;
+	else return 0;
+	}
+void displayInstructions(){
+	printf("  -------------------------------------------------------------------------------\n");
+	printf(" | %51s%36s\n"," \x1b[1mObjectives \x1b[0m","|");
+	printf(" | Archie (%sA%s) ust escape the dungeon by collecting all the chips (%sH%s) in the map. |\n","\x1b[35;106;1;5m","\x1b[0m" ,"\x1b[35m","\x1b[0m");
+	printf(" | Throughout the game Archie will need to unlock doors (%sC%s,%sY%s) with their %9s\n","\x1b[106;1m","\x1b[0m","\x1b[43;1m","\x1b[0m","|");
+	printf(" | corresponding keys (%s\\%s,%s/%s). %53s\n","\x1b[36;1m","\x1b[0m","\x1b[33;1m","\x1b[0m","|");
+	printf(" | Archie should avoid water (%s~%s) or use the water protection powerup (%s*%s). %8s\n","\x1b[44;1m","\x1b[0m","\x1b[34;1m","\x1b[0m","|");
+ 	printf(" | Archie must also avoid fire (%s%%%s) or use fire protection (%s@%s). %19s\n", "\x1b[41m","\x1b[0m","\x1b[31;1m","\x1b[0m","|");
+  	printf(" | Touching fire or water without protection will lead to losing the game. %7s\n","|"); 
+  	printf(" | Archie must also be able to avoid enemies (%s0%s) that will scatter Archie's %6s\n","\x1b[47m\x1b[31m","\x1b[0m","|"); 
+	printf(" | items all over the dungeon again. %45s\n","|");
+	printf(" | Once All chips have been collected, Archie must exit (%sX%s) to proceed %11s\n", "\x1b[45;1m","\x1b[0m","|");
+	printf(" | and remember the passcode for the next level. %33s\n","|");
+	printf(" | If Archie tries to escape without all the chips they will die, %16s\n","|");
+	printf(" | similarly if the wrong passcode is entered thrice then they will also die. %4s\n","|");
+	printf("  -------------------------------------------------------------------------------\n");
+	printf("  -----------\n");
+	printf(" | \x1b[1mControls\x1b[0m  |\n");
+	printf(" |     W     |\n");
+	printf(" |  A     D  |\n");
+	printf(" |     S     |\n");
+	printf("  -----------\n");
+	
 
+}
 void displayMenu()
 {
-	printf("\n |%18s |\n"," Archer's Adveture ");
-	printf(" |%16s    |\n"," 1-Start Game ");
-	printf(" |%16s    |\n", " 2-Exit Game ");
+	printf("  --------------------");
+	printf("\n |%18s |\n"," \x1b[1;4mArcher's Adventure\x1b[0m");
+	printf(" |%17s   |\n"," 1-Start Game ");
+	printf(" |%17s   |\n","  2-Instructions");
+	printf(" |%17s   |\n", " 3-Exit Game ");
+	printf("  --------------------\n");
+
 }
 /*Description: Manages the general flow of the game*/
 int main()
@@ -643,24 +677,30 @@ int main()
 	map game;
 	do
 	{
-		initializeDefault(&player);
 		scanf(" %c",&choice);
-		if (choice !='2'  && choice !='1')
+		if (choice !='2'  && choice !='1' && choice!='3')
 		{
 			printf(" Invalid! Enter 1 or 2! \n");
 		}
 		if (choice == '1')
 		{ 
+			initializeDefault(&player);
 			initLevels(game,nLevel);
 			ReqChip = countItems(game,'H');
 			items(game,nLevel);
 			system("cls"); 
-			if (gamePlay(game, &nLevel, &player,ReqChip)==1)
-				printf("| %s |","You died! Try Again?");
+			if (gamePlay(game, &nLevel, &player,ReqChip)==1){
+				printf(" | %14s%6s\n","You died!","|");
+
+			}
+			displayMenu();
+		}else if (choice=='2'){
+			system("cls");
+			displayInstructions();
 			displayMenu();
 		}
 	 		
-	}while (choice!='2');
+	}while (choice!='3'  );
 return 0;
 
 }
