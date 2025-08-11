@@ -310,7 +310,7 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 		if(*nLevel==3)
 		{
 			system("cls");
-			printf("Congrats! You finished the Game! \n");
+			printf(" Congrats! You finished the Game! \n");
 			next =3;
 		}
 		else
@@ -638,22 +638,34 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 	else return 0;
 	}
 void displayInstructions(){
-	printf("  -------------------------------------------------------------------------------\n");
-	printf(" | %51s%36s\n"," \x1b[1mObjectives \x1b[0m","|");
-	printf(" | Archie (%sA%s) ust escape the dungeon by collecting all the chips (%sH%s) in the map. |\n","\x1b[35;106;1;5m","\x1b[0m" ,"\x1b[35m","\x1b[0m");
-	printf(" | Throughout the game Archie will need to unlock doors (%sC%s,%sY%s) with their %9s\n","\x1b[106;1m","\x1b[0m","\x1b[43;1m","\x1b[0m","|");
-	printf(" | corresponding keys (%s\\%s,%s/%s). %53s\n","\x1b[36;1m","\x1b[0m","\x1b[33;1m","\x1b[0m","|");
-	printf(" | Archie should avoid water (%s~%s) or use the water protection powerup (%s*%s). %8s\n","\x1b[44;1m","\x1b[0m","\x1b[34;1m","\x1b[0m","|");
- 	printf(" | Archie must also avoid fire (%s%%%s) or use fire protection (%s@%s). %19s\n", "\x1b[41m","\x1b[0m","\x1b[31;1m","\x1b[0m","|");
-  	printf(" | Touching fire or water without protection will lead to losing the game. %7s\n","|"); 
-  	printf(" | Archie must also be able to avoid enemies (%s0%s) that will scatter Archie's %6s\n","\x1b[47m\x1b[31m","\x1b[0m","|"); 
-	printf(" | items all over the dungeon again. %45s\n","|");
-	printf(" | Once All chips have been collected, Archie must exit (%sX%s) to proceed %11s\n", "\x1b[45;1m","\x1b[0m","|");
-	printf(" | and remember the passcode for the next level. %33s\n","|");
-	printf(" | If Archie tries to escape without all the chips they will die, %16s\n","|");
-	printf(" | similarly if the wrong passcode is entered thrice then they will also die. %4s\n","|");
-	printf("  -------------------------------------------------------------------------------\n");
-	printf("  -----------\n");
+	FILE *fptr;
+
+	printf("  --------------------------------------------------------------------------------\n");
+	printf(" | %51s%37s\n"," \x1b[1mObjectives \x1b[0m","|");
+
+	fptr = fopen("instructions.txt", "r");
+	char instructions[100];
+	int i= 0;
+	while(fgets(instructions, 100, fptr)) {	
+		i=0;
+		while (instructions[i]!=NULL){
+			if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==')'){
+				Colors(instructions[i]);
+			}else if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==',' && instructions[i+3]==')'){
+				Colors(instructions[i]);
+			}
+			else if(instructions[i-3]=='(' && instructions[i-1]==',' && instructions[i+1]==')')
+				Colors(instructions[i]);
+
+			printf("%c", instructions[i]);
+			printf("\x1b[0m");
+			i++;
+		}
+  		
+			
+	}
+	fclose(fptr);
+	printf("\n  -----------\n");
 	printf(" | \x1b[1mControls\x1b[0m  |\n");
 	printf(" |     W     |\n");
 	printf(" |  A     D  |\n");
@@ -698,6 +710,10 @@ int main()
 			if (gamePlay(game, &nLevel, &player,ReqChip)==1){
 				printf(" | %14s%6s\n","You died!","|");
 
+			}
+			if (gamePlay(game, &nLevel, &player,ReqChip)==2){
+				//printf(" | %14s%6s\n","You exited?","|");
+				system("cls");
 			}
 			displayMenu();
 		}else if (choice=='2'){

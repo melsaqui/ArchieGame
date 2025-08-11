@@ -1,0 +1,15 @@
+ | Archie (A) must escape the dungeon by collecting all the chips (H) in the map. |
+ | Throughout the game Archie will need to unlock doors (C,Y) with the            |
+ | Appropriate keys (\,/)                                                         |
+ | Archie must be able to avoid water elementals(~) or collecting the             |
+ | water protection powerup (*).                                                  |
+ | Archie must also avoid fire elementals (%) or collect the                      |
+ | fire protection powerup (@).                                                   |
+ | Burning or drowning will lead to losing the game.                              |
+ | Archie must also be able to avoid enemies (0) that will throw all Archie's     | 
+ | items all over the dungeon again.                                              |
+ | Once All chips have been collected, Archie must exit (X) to proceed            |
+ | and remember the passcode for the next level.                                  |
+ | If Archie tries to escape without all the chips they will die,                 |
+ | similarly if the wrong passcode is entered thrice then they will also die.     |
+  --------------------------------------------------------------------------------
