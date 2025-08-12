@@ -7,7 +7,7 @@
 #define Row 20
 #define Col 40
 #include "mplib.c"
-
+#define MAX_LEVEL 3
 /*Description: Initializes the map for each level 
 Parameters:
 map Map: the array where the game is stored
@@ -144,7 +144,7 @@ void displayItems(Items Player,int reqChip)
 	printf(" | C-Key: %d %12s\n",Player.Keys.cyan,"|");	
 	printf(" | Fire Protection: %d %2s\n", Player.Pro.fire,"|");
 	printf(" | Water Protection: %d |\n",Player.Pro.water);
-	printf("  --------------------- ");
+	printf("  --------------------- \n");
 
 }
 
@@ -278,7 +278,7 @@ int isValidPass(string pw)
 		printf("\nEnter Password:");
 		for(i=0;i<strlen(pw);i++)
 		{
-			pass[i]=getch();
+			pass[i]=(char)getch();
 			printf("*"); 
 		}
 		pass[strlen(pw)] ='\0';
@@ -303,14 +303,16 @@ if player wants to continue the game they are propmted to input the password in 
 int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 {
 	string pw[2]={"4rchi3", "f137pr0g2"};
-	char choice;
+	char choice ='z';
 	int next;
 	if (pos =='X' && (isDead(pos,*player,*reqChip) == 0))
 	{
-		if(*nLevel==3)
+		if(*nLevel==MAX_LEVEL)
 		{
 			system("cls");
 			printf(" Congrats! You finished the Game! \n");
+			printf("Press any key to continue!");
+			getch();
 			next =3;
 		}
 		else
@@ -321,17 +323,17 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			getch();
 			system("cls");
 			displayLevelUpMenu();
-		
-			while(choice!='3'&& choice!='1'&& choice!='2')
-			{	
+			
+			while(choice!='3'&& choice!='1'&& choice!='2'){
 				scanf(" %c",&choice);
 				if(choice!='3'&& choice!='1'&& choice!='2'){
 					printf("Invalid Choice!");
 				}
-			}	
-	
-			if (choice =='3')
-				next = 3; //quit
+			}
+			
+			if (choice =='3'){
+				next = 3; 
+			}
 			else if(choice =='1')//continue
 			{
 				system("cls");
@@ -349,11 +351,9 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			}
 			else if(choice =='2') //restart level
 			{
-				//system("cls");
-				//printf("press any key to proceed");
-				initLevels(game,*nLevel);
-			    items(game,*nLevel);
-				next = 2; 
+				initLevels(game, *nLevel);
+        		items(game, *nLevel);
+        		next = 2;
 			}
 		}
 	}else
@@ -464,22 +464,28 @@ int characterMove(map game, int *nLevel, int *x, int *y, Items* player,int *reqC
 {	
 	int nEnd;
 	slideTile(x,  y, game[*y][*x],*nLevel, game);
-	if (isLevelUp(game[*y][*x],nLevel,  player,  reqChip, game) == -1) //died because of too many failed attempts at password
+
+	int nLevelUp = isLevelUp(game[*y][*x],nLevel,  player,  reqChip, game);
+	if (nLevelUp == -1) //died because of too many failed attempts at password
 		nEnd = 1;
-	else if(isLevelUp(game[*y][*x],nLevel,  player,  reqChip, game) == 3)//quit game after level
+	else if(nLevelUp == 3)//quit game after level
+	{
+		system("cls"); 
 		nEnd = 2;
+	}	
 	else 
 	{
-		if(isLevelUp(game[*y][*x],nLevel,  player, reqChip, game) == 2) //restart level 
+		if(nLevelUp == 2) //restart level 
 		{
 
 			initializeDefault(player);
-			findPlayer(game,x,y);
+      		findPlayer(game, x, y);
 		}
 			
-		if(isDead(game[*y][*x], *player,*reqChip) == 1)//died by elemental
+		else if(isDead(game[*y][*x], *player,*reqChip) == 1)//died by elemental
 			return 1;
-		if(characterItem(game[*y][*x], player)==1)
+
+		else if(characterItem(game[*y][*x], player)==1)
 		{
 			if (*nLevel == 1)
 			{
@@ -502,12 +508,13 @@ int characterMove(map game, int *nLevel, int *x, int *y, Items* player,int *reqC
 			}
 			items(game,*nLevel);
 		}	
+		
+			game[*y][*x]= 'A';
+			system("cls");
+			displayBoard(game,*nLevel);
+			displayItems(*player,*reqChip);
+			nEnd = 0;
 	
-		system("cls");
-		game[*y][*x]= 'A';
-		displayBoard(game,*nLevel);
-		displayItems(*player,*reqChip);
-		nEnd = 0;
 	}
 	return nEnd;
 }
@@ -541,12 +548,12 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 	char control;
 	char temp ='_';
 	int bEnd = 0;
-	displayBoard(game,*nLevel);
-	displayItems(*player,reqChip);
+	
+	int charMoved ;
 	while (bEnd == 0)
 	{ 	
 		if(control!='d'&&control!='D'&&control!='a'&&control!='A'&& control!='s'&&control!='S'&&control!='w'&&control!='W')
-			control=getch();
+			control=(char)getch();
 		while ((control == 'd'||control== 'D' ) && bEnd==0)
 		{
 			if((game[y][x+1]!='#'&& x+1<=Col-1)&& isLocked(game[y][x+1],*player)==0)
@@ -559,12 +566,13 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 					temp = game[y][x+1];
 				else temp = '_';	
 			}	
-			if(characterMove(game, nLevel,&x,&y, player,&reqChip)==1)
+			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+			if(charMoved==1)
 				bEnd=1;
-			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			else if(charMoved==2) //quit after level
 				bEnd =2;
 			else 
-				control = getch();
+				control = (char)getch();
 		}
 		while ((control== 'a'||control == 'A') && bEnd==0)
 		{
@@ -576,14 +584,16 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 					temp = game[y][x]; 
 				else temp = '_';
 			}
-			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
+			if(charMoved==1)
 				bEnd=1;
-			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			else if(charMoved==2)
 			{
 				bEnd=2;
 			}
 			else
-				control=getch();
+				control=(char)getch();
 		}
 		while ((control== 's'||control== 'S') && bEnd==0)
 		{
@@ -596,14 +606,16 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 				else 
 					temp = '_';
 			}	
-			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
+			if(charMoved==1)
 				bEnd=1;
-			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			else if(charMoved==2)
 			{
 				bEnd=2;
 			}
 			else
-				control = getch();
+				control = (char)getch();
 		}
 		while ((control=='w'||control=='W')&&bEnd==0)
 		{
@@ -616,14 +628,16 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 				else 
 					temp = '_';
  			}
-			if(characterMove(game, nLevel,&x,&y,player,&reqChip)==1)
+			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
+			if(charMoved==1)
 				bEnd=1;
-			else if(characterMove(game, nLevel,&x,&y,player,&reqChip)==2)
+			else if(charMoved==2)
 			{
 				bEnd = 2;
 			}
 			else	
-				control = getch();
+				control = (char)getch();
 		}
 	}
 
@@ -646,25 +660,28 @@ void displayInstructions(){
 	fptr = fopen("instructions.txt", "r");
 	char instructions[100];
 	int i= 0;
-	while(fgets(instructions, 100, fptr)) {	
-		i=0;
-		while (instructions[i]!=NULL){
-			if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==')'){
-				Colors(instructions[i]);
-			}else if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==',' && instructions[i+3]==')'){
-				Colors(instructions[i]);
-			}
-			else if(instructions[i-3]=='(' && instructions[i-1]==',' && instructions[i+1]==')')
-				Colors(instructions[i]);
+	if (fptr != NULL){
+		while(fgets(instructions, 100, fptr)) {	
+			i=0;
+			while (instructions[i]!=NULL){
+				if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==')'){
+					Colors(instructions[i]);
+				}else if (i!=0 && instructions[i-1]=='(' && instructions[i+1]==',' && instructions[i+3]==')'){
+					Colors(instructions[i]);
+				}
+				else if(instructions[i-3]=='(' && instructions[i-1]==',' && instructions[i+1]==')')
+					Colors(instructions[i]);
 
-			printf("%c", instructions[i]);
-			printf("\x1b[0m");
-			i++;
-		}
+				printf("%c", instructions[i]);
+				printf("\x1b[0m");
+				i++;
+			}
   		
 			
+		}
+		fclose(fptr);
 	}
-	fclose(fptr);
+	
 	printf("\n  -----------\n");
 	printf(" | \x1b[1mControls\x1b[0m  |\n");
 	printf(" |     W     |\n");
@@ -687,6 +704,7 @@ void displayMenu()
 /*Description: Manages the general flow of the game*/
 int main()
 {
+	
 	int nLevel = 1;
 	char choice;
 	int ReqChip;
@@ -707,22 +725,23 @@ int main()
 			ReqChip = countItems(game,'H');
 			items(game,nLevel);
 			system("cls"); 
-			if (gamePlay(game, &nLevel, &player,ReqChip)==1){
+			displayBoard(game,nLevel);
+			displayItems(player,ReqChip);
+			int nGame;
+			nGame=gamePlay(game, &nLevel, &player,ReqChip);
+			if (nGame==1){
 				printf(" | %14s%6s\n","You died!","|");
-
-			}
-			if (gamePlay(game, &nLevel, &player,ReqChip)==2){
-				//printf(" | %14s%6s\n","You exited?","|");
-				system("cls");
+				
 			}
 			displayMenu();
+			
 		}else if (choice=='2'){
 			system("cls");
 			displayInstructions();
 			displayMenu();
 		}
 	 		
-	}while (choice!='3'  );
+	}while (choice!='3');
 return 0;
 
 }

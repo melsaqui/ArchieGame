@@ -1,8 +1,5 @@
-
 typedef char map[Row][Col];
 typedef char string[30];
-
-
 
 typedef struct
 {
