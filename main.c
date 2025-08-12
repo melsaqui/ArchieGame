@@ -1,4 +1,5 @@
 //use windows because of system("cls")
+#include<windows.h>
 #include <stdio.h>
 #include<time.h>
 #include<conio.h>
@@ -8,6 +9,7 @@
 #define Col 40
 #include "mplib.c"
 #define MAX_LEVEL 3
+
 /*Description: Initializes the map for each level 
 Parameters:
 map Map: the array where the game is stored
@@ -72,7 +74,7 @@ Return Value: A random integer within the limits of nLow and nUp
 int Randomizer(int nLow,int nUp)
 {
 	int num;
-	 num = (rand() % (nUp - nLow + 1)) + nLow;
+	num = (rand() % (nUp - nLow + 1)) + nLow;
     return num;
 }
 /*Description: Decides where all the power-ups and keys will be
@@ -327,7 +329,7 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			while(choice!='3'&& choice!='1'&& choice!='2'){
 				scanf(" %c",&choice);
 				if(choice!='3'&& choice!='1'&& choice!='2'){
-					printf("Invalid Choice!");
+					printf(" Invalid! Enter 1, 2 or 3! \n");
 				}
 			}
 			
@@ -338,7 +340,7 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 			{
 				system("cls");
 				if(isValidPass(pw[*nLevel-1])==-1)
-					next=-1;
+					next=-1; // not validPass
 				else if	(isValidPass(pw[*nLevel-1])==1)
 				{
 					*nLevel += 1;
@@ -349,12 +351,9 @@ int isLevelUp(char pos, int *nLevel, Items *player, int *reqChip, map game)
 					next=1;
 				}
 			}
-			else if(choice =='2') //restart level
-			{
-				initLevels(game, *nLevel);
-        		items(game, *nLevel);
+			else if(choice =='2') //restart level			
         		next = 2;
-			}
+			
 		}
 	}else
 		next= 0;
@@ -477,7 +476,8 @@ int characterMove(map game, int *nLevel, int *x, int *y, Items* player,int *reqC
 	{
 		if(nLevelUp == 2) //restart level 
 		{
-
+			initLevels(game, *nLevel);
+        	items(game, *nLevel);
 			initializeDefault(player);
       		findPlayer(game, x, y);
 		}
@@ -544,12 +544,14 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 {
 	int x;
 	int y;
-	findPlayer(game, &x,&y);
 	char control;
 	char temp ='_';
 	int bEnd = 0;
-	
 	int charMoved ;
+	displayBoard(game,*nLevel);
+	displayItems(*player,reqChip);
+	findPlayer(game, &x,&y);
+
 	while (bEnd == 0)
 	{ 	
 		if(control!='d'&&control!='D'&&control!='a'&&control!='A'&& control!='s'&&control!='S'&&control!='w'&&control!='W')
@@ -565,8 +567,10 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 				else if(isTile(game[y][x]==1))
 					temp = game[y][x+1];
 				else temp = '_';	
+
+				charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
 			}	
-			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
 			if(charMoved==1)
 				bEnd=1;
 			else if(charMoved==2) //quit after level
@@ -583,8 +587,9 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 				if (isTile(game[y][x]) == 1)
 					temp = game[y][x]; 
 				else temp = '_';
+				charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
 			}
-			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
 
 			if(charMoved==1)
 				bEnd=1;
@@ -605,8 +610,9 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 					temp = game[y][x];
 				else 
 					temp = '_';
+				charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
 			}	
-			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
 
 			if(charMoved==1)
 				bEnd=1;
@@ -627,8 +633,9 @@ int gamePlay(map game, int *nLevel, Items *player,int reqChip)
 					temp = game[y][x];
 				else 
 					temp = '_';
+				charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
+
  			}
-			charMoved = characterMove(game, nLevel,&x,&y, player,&reqChip);
 
 			if(charMoved==1)
 				bEnd=1;
@@ -704,6 +711,8 @@ void displayMenu()
 /*Description: Manages the general flow of the game*/
 int main()
 {
+	HWND consoleWindow = GetConsoleWindow(); // This gets the value Windows uses to identify your output window 
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
 	
 	int nLevel = 1;
 	char choice;
@@ -711,12 +720,14 @@ int main()
 	displayMenu();
 	Items player;
 	map game;
+	int nGame;
+
 	do
 	{
 		scanf(" %c",&choice);
 		if (choice !='2'  && choice !='1' && choice!='3')
 		{
-			printf(" Invalid! Enter 1 or 2! \n");
+			printf(" Invalid! Enter 1, 2 or 3! \n");
 		}
 		if (choice == '1')
 		{ 
@@ -725,13 +736,10 @@ int main()
 			ReqChip = countItems(game,'H');
 			items(game,nLevel);
 			system("cls"); 
-			displayBoard(game,nLevel);
-			displayItems(player,ReqChip);
-			int nGame;
+			
 			nGame=gamePlay(game, &nLevel, &player,ReqChip);
 			if (nGame==1){
 				printf(" | %14s%6s\n","You died!","|");
-				
 			}
 			displayMenu();
 			
@@ -745,7 +753,3 @@ int main()
 return 0;
 
 }
-
-
-	
-
